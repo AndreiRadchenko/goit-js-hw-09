@@ -1,5 +1,21 @@
 @import url(https://fonts.googleapis.com/css?family=Covered+By+Your+Grace);
 
+#datetime-picker {
+  width: 200px;
+  height: 40px;
+  /* padding-left: 40px; */
+  border: 1px solid tomato;
+  /* border-radius: 4px; */
+  font: inherit;
+  text-align: center;
+}
+.controls-wrap {
+  display: flex;
+  align-content: center;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 20px;
+}
 [data-days] {
   font-size: 200px;
   color: #db4844;
@@ -21,7 +37,7 @@ div.timer {
   display: flex;
   align-items: baseline;
   justify-content: center;
-  gap: 20px;
+  gap: 12px;
   line-height: 1;
   padding: 20px;
   font-size: 40px;

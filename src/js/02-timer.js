@@ -1,8 +1,6 @@
 import flatpickr from 'flatpickr';
+import { Countdown } from './countdown_timer.js';
 import 'flatpickr/dist/flatpickr.min.css';
-
-const TIMER_INTERVAL = 1000; //ms
-let timer = null;
 
 const startBtnRef = document.querySelector('button[data-start]');
 const timerRefs = {
@@ -11,6 +9,8 @@ const timerRefs = {
   minutes: document.querySelector('[data-minutes]'),
   seconds: document.querySelector('[data-seconds]'),
 };
+
+const timer = new Countdown({ onTick: updateTimerUI });
 
 startBtnRef.disabled = true;
 startBtnRef.addEventListener('click', onStartBtnClick);
@@ -22,46 +22,34 @@ const calendars = flatpickr('#datetime-picker', {
   minuteIncrement: 1,
   minDate: 'today',
   // minTime: Date.now();
-  onClose: onDataSlect,
+  onClose: onDataSelect,
 });
 
-function onDataSlect(selectedDates) {
+function onDataSelect(selectedDates) {
   console.log(selectedDates[0]);
   if (selectedDates[0] < Date.now()) {
     startBtnRef.disabled = true;
     alert('Please choose a date in the future');
     return;
   }
-  if (!timer) {
-    startBtnRef.disabled = false;
-  }
+  timer.reset();
+  startBtnRef.disabled = false;
 }
 
 function onStartBtnClick() {
-  if (timer) {
+  if (timer.intervalId) {
     return;
   }
-  timer = setInterval(updateTimer, TIMER_INTERVAL);
-  console.log('timer started');
+  timer.start(calendars.selectedDates[0]);
   startBtnRef.disabled = true;
 }
 
-function updateTimer() {
-  const timeLeftMiliseconds = calendars.selectedDates[0] - Date.now();
-  if (timeLeftMiliseconds < 0) {
-    clearInterval(timer);
-    console.log('timer stoped');
-    timer = null;
-    return;
-  }
+function updateTimerUI(timeLeftMiliseconds) {
   const timeLeft = convertMs(timeLeftMiliseconds);
-  timerRefs.days.textContent = addLeadingZero(timeLeft.days);
-  timerRefs.hours.textContent = addLeadingZero(timeLeft.hours);
-  timerRefs.minutes.textContent = addLeadingZero(timeLeft.minutes);
-  timerRefs.seconds.textContent = addLeadingZero(timeLeft.seconds);
+  for (const field in timerRefs) {
+    timerRefs[field].textContent = addLeadingZero(timeLeft[field]);
+  }
 }
-
-function updateTimerUI() {}
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
@@ -83,5 +71,9 @@ function convertMs(ms) {
 }
 
 function addLeadingZero(value) {
-  return String(value).padStart(2, '0');
+  const strValue = String(value);
+  if (strValue.length > 2) {
+    return strValue;
+  }
+  return strValue.padStart(2, '0');
 }
