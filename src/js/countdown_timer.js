@@ -1,5 +1,6 @@
 export class Countdown {
   TIMER_INTERVAL = 1000; //ms
+  static DONE = 0;
 
   // constructor gets callback for update interface
   constructor({ onTick }) {
@@ -14,18 +15,20 @@ export class Countdown {
 
   //method gets initial starting time in Unix time ms for countdown timer
   start(initialTime) {
-    if (this.intervalId) {
-      return;
-    }
-    this.intervalId = setInterval(() => {
-      const timeLeftMiliseconds = initialTime - Date.now();
-      if (timeLeftMiliseconds < 0) {
-        this.reset();
-        return;
+    return new Promise((resolve, reject) => {
+      if (this.intervalId) {
+        reject('Timer has been already started');
+      } else {
+        this.intervalId = setInterval(() => {
+          const timeLeftMiliseconds = initialTime - Date.now();
+          if (timeLeftMiliseconds < 1000) {
+            resolve('Counting done successfully!');
+          }
+          this.onTick(timeLeftMiliseconds);
+        }, this.TIMER_INTERVAL);
+        console.log('timer started');
       }
-      this.onTick(timeLeftMiliseconds);
-    }, this.TIMER_INTERVAL);
-    console.log('timer started');
+    });
   }
 
   reset() {

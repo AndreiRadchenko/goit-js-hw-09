@@ -1,4 +1,5 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+const NOTIFY_TIMEOUT = 5000; //ms
 
 const promisesFormRef = document.querySelector('.form');
 
@@ -40,12 +41,12 @@ function createPromise(delay, position) {
   })
     .then(value =>
       Notify.success(value, {
-        timeout: 5000,
+        timeout: NOTIFY_TIMEOUT,
       })
     )
     .catch(error =>
       Notify.failure(error, {
-        timeout: 5000,
+        timeout: NOTIFY_TIMEOUT,
       })
     );
 }

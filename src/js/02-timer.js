@@ -1,6 +1,8 @@
 import flatpickr from 'flatpickr';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { Countdown } from './countdown_timer.js';
 import 'flatpickr/dist/flatpickr.min.css';
+const NOTIFY_TIMEOUT = 5000; //ms
 
 const startBtnRef = document.querySelector('button[data-start]');
 const timerRefs = {
@@ -20,8 +22,6 @@ const calendars = flatpickr('#datetime-picker', {
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
-  minDate: 'today',
-  // minTime: Date.now();
   onClose: onDataSelect,
 });
 
@@ -29,7 +29,9 @@ function onDataSelect(selectedDates) {
   console.log(selectedDates[0]);
   if (selectedDates[0] < Date.now()) {
     startBtnRef.disabled = true;
-    alert('Please choose a date in the future');
+    Notify.warning('Please choose a date in the future', {
+      timeout: NOTIFY_TIMEOUT,
+    });
     return;
   }
   timer.reset();
@@ -37,10 +39,19 @@ function onDataSelect(selectedDates) {
 }
 
 function onStartBtnClick() {
-  if (timer.intervalId) {
-    return;
-  }
-  timer.start(calendars.selectedDates[0]);
+  timer
+    .start(calendars.selectedDates[0])
+    .then(value => {
+      timer.reset();
+      Notify.success(value, {
+        timeout: NOTIFY_TIMEOUT,
+      });
+    })
+    .catch(error =>
+      Notify.warning(error, {
+        timeout: NOTIFY_TIMEOUT,
+      })
+    );
   startBtnRef.disabled = true;
 }
 
