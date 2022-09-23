@@ -5,23 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Promise generator</title>
     <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/promise-form.css" />
   </head>
   <body>
     <p><a href="index.html">Go back</a></p>
 
     <form class="form">
-      <label>
-        First delay (ms)
-        <input type="number" name="delay" required />
-      </label>
-      <label>
-        Delay step (ms)
-        <input type="number" name="step" required />
-      </label>
-      <label>
-        Amount
-        <input type="number" name="amount" required />
-      </label>
+      <div class="form__item">
+        <label for="delay"> First delay (ms) </label>
+        <input type="number" name="delay" id="delay" required />
+      </div>
+      <div class="form__item">
+        <label for="step"> Delay step (ms) </label>
+        <input type="number" name="step" id="step" required />
+      </div>
+      <div class="form__item">
+        <label for="amount"> Amount </label>
+        <input type="number" name="amount" id="amount" required />
+      </div>
       <button type="submit">Create promises</button>
     </form>
 
